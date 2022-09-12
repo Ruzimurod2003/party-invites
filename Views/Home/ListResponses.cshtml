@@ -1,0 +1,57 @@
+@model IEnumerable<PartyInvites.Models.GuestResponse>
+@{
+    Layout = null;
+}
+@using System;
+@using System.IO;
+@using System.Linq;
+@using System.Collections.Generic;
+@using Newtonsoft.Json;
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Responses</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+
+<body>
+    <div class="text-center p-2">
+        <h2>Here is the list of people attending the party</h2>
+        <table class="table table-bordered table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PartyInvites.Models.GuestResponse r in Model)
+                {
+                    <tr>
+                        <td>@r.Name</td>
+                        <td>@r.Email</td>
+                        <td>@r.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+         @foreach (PartyInvites.Models.GuestResponse r in Model){
+             List<data> _data = new List<data>();
+            _data.Add(new data(){Id=1,Ism=r.Name,Nomer=r.Phone,Pochta=r.Email});
+            string json = JsonConvert.SerializeObject(_data.ToArray());
+            
+            System.IO.File.WriteAllText(@""+r.Name+"_"+".json",json);
+            using(StreamWriter file = File.CreateText(@""+r.Name+"_"+".json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+               serializer.Serialize(file,_data);
+            }
+        }
+        
+    </div>
+</body>
+
+</html>
